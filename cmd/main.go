@@ -17,6 +17,7 @@ const (
 	Initialize          Method = "initialize"
 	TextDocumentDidOpen Method = "textDocument/didOpen"
 	Shutdown            Method = "shutdown"
+	TextDidChange       Method = "textDocument/didChange"
 )
 
 func main() {
@@ -56,12 +57,24 @@ func handleMessage(logger *log.Logger, state dummycompiler.State, method Method,
 		if err != nil {
 			logger.Printf("error while responding :%s", err.Error())
 		}
+
 	case TextDocumentDidOpen:
 		var request lsp.DidOpenTextDocumentNotification
 		if err := json.Unmarshal(body, &request); err != nil {
 			logger.Printf("error file parseing:%s\n", err.Error())
 		}
+		logger.Printf("opend file :%s", request.Params.TextDocumentItem.Uri)
 		state.AddFile(request.Params.TextDocumentItem.Uri, request.Params.TextDocumentItem.Text)
+
+	case TextDidChange:
+		var request lsp.DidChangeTextDocumentNotification
+		if err := json.Unmarshal(body, &request); err != nil {
+			logger.Printf("error file parseing:%s\n", err.Error())
+		}
+		logger.Printf("changed file :%s", request.Params.TextDocumentItem.Uri)
+		for _, change := range request.Params.ContentChanges {
+			state.UpdateFile(request.Params.TextDocumentItem.Uri, change.NewData)
+		}
 	}
 }
 

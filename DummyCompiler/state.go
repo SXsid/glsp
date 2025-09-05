@@ -11,3 +11,7 @@ func NewState() State {
 func (s *State) AddFile(fileName, data string) {
 	s.Files[fileName] = data
 }
+
+func (s *State) UpdateFile(fileName, updatedData string) {
+	s.Files[fileName] = updatedData
+}
