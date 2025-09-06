@@ -18,3 +18,17 @@ type VersionedTextDocumentIdentifier struct {
 type TextDocumentContentChangeEvent struct {
 	NewData string `json:"text"`
 }
+type HoverParams struct {
+	TextDocumentPositionParams
+}
+type TextDocumentPositionParams struct {
+	TextDocument TextDocumentIdentifier `json:"textDocument"`
+	Position     Position               `json:"position"`
+}
+type Position struct {
+	Line      int `json:"line"`
+	Character int `json:"character"`
+}
+type DefinitionParams struct {
+	TextDocumentPositionParams
+}
