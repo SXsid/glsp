@@ -18,6 +18,7 @@ const (
 	TextDidChange       Method = "textDocument/didChange"
 	TextHover           Method = "textDocument/hover"
 	TextDefinition      Method = "textDocument/definition"
+	TextCodeAction      Method = "textDocument/codeAction"
 )
 
 type Server struct {

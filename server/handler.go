@@ -36,7 +36,9 @@ func (s *Server) handleMessage(method Method, body []byte) {
 		}
 		s.logger.Printf("changed file :%s", request.Params.TextDocumentItem.Uri)
 		for _, change := range request.Params.ContentChanges {
-			s.State.UpdateFile(request.Params.TextDocumentItem.Uri, change.NewData)
+			diagnostics := s.State.UpdateFile(request.Params.TextDocumentItem.Uri, change.NewData)
+			msg := lsp.NewDiagnostic(request.Params.TextDocumentItem.Uri, diagnostics)
+			s.writeResponse(msg)
 		}
 
 	case TextHover:
@@ -47,6 +49,14 @@ func (s *Server) handleMessage(method Method, body []byte) {
 		}
 		content := s.State.Hover(request.Params.TextDocument.Uri)
 		msg := lsp.NewHoverReponse(request.ID, content)
+		s.writeResponse(msg)
+	case TextDefinition:
+
+		var request lsp.TextDocumentDefinitionRequest
+		if err := json.Unmarshal(body, &request); err != nil {
+			s.logger.Printf("error file parseing:%s\n", err.Error())
+		}
+		msg := lsp.NewTextDocumentefinatinResoponse(request.ID, request.Params.TextDocument.Uri, request.Params.Position)
 		s.writeResponse(msg)
 	}
 }

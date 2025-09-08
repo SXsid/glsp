@@ -8,7 +8,6 @@ type TextDocumentDefinitionRequest struct {
 type TextDocumentDefinitionReponse struct {
 	Response
 	Result Location `json:"result"`
-	Error  string   `json:"error"`
 }
 type Location struct {
 	Uri   string `json:"uri"`
@@ -19,4 +18,26 @@ type Location struct {
 type Range struct {
 	Start Position `json:"start"`
 	End   Position `json:"end"`
+}
+
+func NewTextDocumentefinatinResoponse(id int, uri string, position Position) TextDocumentDefinitionReponse {
+	return TextDocumentDefinitionReponse{
+		Response{
+			"2.0",
+			&id,
+		},
+		Location{
+			Uri: uri,
+			Range: Range{
+				Position{
+					position.Line - 1,
+					0,
+				},
+				Position{
+					position.Line - 1,
+					0,
+				},
+			},
+		},
+	}
 }
